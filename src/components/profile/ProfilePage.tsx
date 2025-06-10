@@ -9,6 +9,7 @@ import ProfileHeader from './ProfileHeader';
 import UserInfoForm from './UserInfoForm';
 import UserActions from './UserActions';
 import PasswordGenerator from './PasswordGenerator';
+import SystemCredentials from './SystemCredentials';
 
 interface User {
   name: string;
@@ -60,8 +61,9 @@ const ProfilePage = () => {
             <ProfileHeader />
 
             <Tabs defaultValue="account" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="account">Informações da Conta</TabsTrigger>
+                <TabsTrigger value="credentials">Credenciais do Sistema</TabsTrigger>
                 <TabsTrigger value="password">Gerador de Senhas</TabsTrigger>
               </TabsList>
 
@@ -84,6 +86,10 @@ const ProfilePage = () => {
                     />
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="credentials" className="mt-6">
+                <SystemCredentials />
               </TabsContent>
 
               <TabsContent value="password" className="mt-6">
