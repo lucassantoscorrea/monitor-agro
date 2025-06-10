@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, Eye } from "lucide-react";
+import { Leaf } from "lucide-react";
 
 interface LoginPageProps {
   onLogin: () => void;
@@ -23,7 +23,7 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
     setError("");
 
     // Simular autenticação
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     if (email && password) {
       onLogin();
@@ -31,17 +31,6 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
       setError("Credenciais inválidas");
     }
     
-    setIsLoading(false);
-  };
-
-  const handleDemoLogin = async () => {
-    setIsLoading(true);
-    setError("");
-
-    // Simular login demo com delay menor
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    onLogin();
     setIsLoading(false);
   };
 
@@ -103,26 +92,6 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
                 disabled={isLoading}
               >
                 {isLoading ? "Entrando..." : "Entrar"}
-              </Button>
-
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Ou</span>
-                </div>
-              </div>
-
-              <Button 
-                type="button"
-                variant="outline"
-                onClick={handleDemoLogin}
-                className="w-full h-12 text-lg font-medium border-accent text-accent hover:bg-accent hover:text-accent-foreground"
-                disabled={isLoading}
-              >
-                <Eye className="w-5 h-5 mr-2" />
-                {isLoading ? "Entrando..." : "Login Demo"}
               </Button>
 
               <div className="text-center mt-4">
