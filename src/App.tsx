@@ -32,13 +32,13 @@ const AppContent = () => {
 
   if (!isAuthenticated) {
     return (
-      <>
+      <BrowserRouter>
         {showForgotPassword ? (
           <ForgotPasswordPage onBackToLogin={handleBackToLogin} />
         ) : (
           <LoginPage onLogin={login} onForgotPassword={handleForgotPassword} />
         )}
-      </>
+      </BrowserRouter>
     );
   }
 

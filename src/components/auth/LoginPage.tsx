@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface LoginPageProps {
   onLogin: () => void;
@@ -16,6 +16,7 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +28,8 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
     
     if (email && password) {
       onLogin();
+      // Redirecionar para dashboard após login
+      navigate("/dashboard");
     } else {
       setError("Credenciais inválidas");
     }
@@ -42,6 +45,8 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
     await new Promise(resolve => setTimeout(resolve, 500));
     
     onLogin();
+    // Redirecionar para dashboard após login demo
+    navigate("/dashboard");
     setIsLoading(false);
   };
 
