@@ -17,7 +17,7 @@ import { Link, useLocation } from "react-router-dom";
 const menuItems = [
   {
     title: "Dashboard",
-    url: "/",
+    url: "/dashboard",
     icon: Home,
   },
   {
@@ -46,8 +46,8 @@ export function AppSidebar() {
   const location = useLocation();
 
   const isActive = (url: string) => {
-    if (url === "/") {
-      return location.pathname === "/";
+    if (url === "/dashboard") {
+      return location.pathname === "/dashboard";
     }
     return location.pathname.startsWith(url);
   };
