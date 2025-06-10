@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/components/ui/sonner';
-import { LogOut, ArrowLeft } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
@@ -81,14 +81,6 @@ const ProfilePage = () => {
         <SidebarInset>
           <div className="container mx-auto px-4 py-8 max-w-2xl">
             <div className="mb-8">
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate("/")}
-                className="mb-4 p-0 h-auto hover:bg-transparent"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar para Dashboard
-              </Button>
               <h1 className="text-3xl font-bold text-foreground">Meu Perfil</h1>
               <p className="text-muted-foreground mt-2">
                 Gerencie suas informações da conta e permissões
