@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FileText, Calendar, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 
 const ReportsPage = () => {
   const navigate = useNavigate();
@@ -56,115 +58,130 @@ const ReportsPage = () => {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Relatórios</h1>
-          <p className="text-muted-foreground mt-2">
-            Histórico de buscas e resultados de preços
-          </p>
-        </div>
-      </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <SidebarInset>
+          <div className="flex-1 space-y-6 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate("/")}
+                  className="mb-4 p-0 h-auto hover:bg-transparent"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Voltar para Dashboard
+                </Button>
+                <h1 className="text-3xl font-bold text-foreground">Relatórios</h1>
+                <p className="text-muted-foreground mt-2">
+                  Histórico de buscas e resultados de preços
+                </p>
+              </div>
+            </div>
 
-      <div className="grid gap-6 md:grid-cols-4 mb-6">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-primary">{reports.length}</div>
-            <p className="text-sm text-muted-foreground">Total de Relatórios</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-green-600">
-              {reports.filter(r => r.status === "Completo").length}
+            <div className="grid gap-6 md:grid-cols-4 mb-6">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-2xl font-bold text-primary">{reports.length}</div>
+                  <p className="text-sm text-muted-foreground">Total de Relatórios</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-2xl font-bold text-green-600">
+                    {reports.filter(r => r.status === "Completo").length}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Buscas Completas</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-2xl font-bold text-accent">
+                    {Math.round(reports.reduce((sum, r) => sum + r.results, 0) / reports.length)}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Média de Resultados</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-2xl font-bold text-primary">Hoje</div>
+                  <p className="text-sm text-muted-foreground">Último Relatório</p>
+                </CardContent>
+              </Card>
             </div>
-            <p className="text-sm text-muted-foreground">Buscas Completas</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-accent">
-              {Math.round(reports.reduce((sum, r) => sum + r.results, 0) / reports.length)}
-            </div>
-            <p className="text-sm text-muted-foreground">Média de Resultados</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-primary">Hoje</div>
-            <p className="text-sm text-muted-foreground">Último Relatório</p>
-          </CardContent>
-        </Card>
-      </div>
 
-      <Card className="premium-shadow">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-primary" />
-            Histórico de Relatórios
-          </CardTitle>
-          <CardDescription>
-            Relatórios gerados automaticamente pelo sistema de monitoramento
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {reports.length === 0 ? (
-            <div className="text-center py-8">
-              <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">Nenhum relatório gerado ainda</p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Data da Geração</TableHead>
-                  <TableHead>Produtos</TableHead>
-                  <TableHead>Resultados</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {reports.map((report) => (
-                  <TableRow key={report.id} className="hover:bg-secondary/30">
-                    <TableCell className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium">{report.date}</span>
-                    </TableCell>
-                    <TableCell>{report.products} produtos</TableCell>
-                    <TableCell>
-                      <span className="font-medium text-green-600">{report.results} preços</span>
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(report.status)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="mr-2"
-                        onClick={() => handleViewReport(report.id)}
-                      >
-                        <ArrowLeft className="w-4 h-4 mr-1" />
-                        Visualizar
-                      </Button>
-                      <Button variant="ghost" size="sm" className="mr-2">
-                        <FileText className="w-4 h-4 mr-1" />
-                        Excel
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <FileText className="w-4 h-4 mr-1" />
-                        PDF
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+            <Card className="premium-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-primary" />
+                  Histórico de Relatórios
+                </CardTitle>
+                <CardDescription>
+                  Relatórios gerados automaticamente pelo sistema de monitoramento
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {reports.length === 0 ? (
+                  <div className="text-center py-8">
+                    <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Nenhum relatório gerado ainda</p>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Data da Geração</TableHead>
+                        <TableHead>Produtos</TableHead>
+                        <TableHead>Resultados</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {reports.map((report) => (
+                        <TableRow key={report.id} className="hover:bg-secondary/30">
+                          <TableCell className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-muted-foreground" />
+                            <span className="font-medium">{report.date}</span>
+                          </TableCell>
+                          <TableCell>{report.products} produtos</TableCell>
+                          <TableCell>
+                            <span className="font-medium text-green-600">{report.results} preços</span>
+                          </TableCell>
+                          <TableCell>
+                            {getStatusBadge(report.status)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="mr-2"
+                              onClick={() => handleViewReport(report.id)}
+                            >
+                              <ArrowLeft className="w-4 h-4 mr-1" />
+                              Visualizar
+                            </Button>
+                            <Button variant="ghost" size="sm" className="mr-2">
+                              <FileText className="w-4 h-4 mr-1" />
+                              Excel
+                            </Button>
+                            <Button variant="ghost" size="sm">
+                              <FileText className="w-4 h-4 mr-1" />
+                              PDF
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 

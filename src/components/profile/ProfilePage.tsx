@@ -6,8 +6,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/components/ui/sonner';
-import { LogOut } from 'lucide-react';
+import { LogOut, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 
 interface User {
   name: string;
@@ -73,112 +75,127 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Meu Perfil</h1>
-        <p className="text-muted-foreground mt-2">
-          Gerencie suas informações da conta e permissões
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Informações da Conta</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name">Nome</Label>
-            <Input
-              id="name"
-              value={user.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              disabled={isViewer}
-              placeholder="Digite seu nome"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">E-mail</Label>
-            <Input
-              id="email"
-              type="email"
-              value={user.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              disabled={isViewer}
-              placeholder="Digite seu e-mail"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="organization">Organização atual</Label>
-            <Select
-              value={user.organization}
-              onValueChange={(value) => handleInputChange('organization', value)}
-              disabled={isViewer}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione uma organização" />
-              </SelectTrigger>
-              <SelectContent>
-                {organizations.map((org) => (
-                  <SelectItem key={org} value={org}>
-                    {org}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {canEditPermissions && (
-            <div className="space-y-2">
-              <Label htmlFor="permission">Permissão</Label>
-              <Select
-                value={user.permission}
-                onValueChange={(value) => handleInputChange('permission', value as User['permission'])}
-                disabled={isViewer}
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <SidebarInset>
+          <div className="container mx-auto px-4 py-8 max-w-2xl">
+            <div className="mb-8">
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate("/")}
+                className="mb-4 p-0 h-auto hover:bg-transparent"
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma permissão" />
-                </SelectTrigger>
-                <SelectContent>
-                  {permissions.map((permission) => (
-                    <SelectItem key={permission.value} value={permission.value}>
-                      {permission.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Voltar para Dashboard
+              </Button>
+              <h1 className="text-3xl font-bold text-foreground">Meu Perfil</h1>
+              <p className="text-muted-foreground mt-2">
+                Gerencie suas informações da conta e permissões
+              </p>
             </div>
-          )}
 
-          <div className="flex flex-col sm:flex-row gap-4 pt-6">
-            <Button
-              onClick={handleSave}
-              disabled={isViewer || isLoading}
-              className="flex-1"
-            >
-              {isLoading ? 'Salvando...' : 'Salvar alterações'}
-            </Button>
-            
-            <Button
-              variant="destructive"
-              onClick={handleLogout}
-              className="flex-1"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sair da conta
-            </Button>
+            <Card>
+              <CardHeader>
+                <CardTitle>Informações da Conta</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nome</Label>
+                  <Input
+                    id="name"
+                    value={user.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    disabled={isViewer}
+                    placeholder="Digite seu nome"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={user.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    disabled={isViewer}
+                    placeholder="Digite seu e-mail"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="organization">Organização atual</Label>
+                  <Select
+                    value={user.organization}
+                    onValueChange={(value) => handleInputChange('organization', value)}
+                    disabled={isViewer}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma organização" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {organizations.map((org) => (
+                        <SelectItem key={org} value={org}>
+                          {org}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {canEditPermissions && (
+                  <div className="space-y-2">
+                    <Label htmlFor="permission">Permissão</Label>
+                    <Select
+                      value={user.permission}
+                      onValueChange={(value) => handleInputChange('permission', value as User['permission'])}
+                      disabled={isViewer}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma permissão" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {permissions.map((permission) => (
+                          <SelectItem key={permission.value} value={permission.value}>
+                            {permission.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                  <Button
+                    onClick={handleSave}
+                    disabled={isViewer || isLoading}
+                    className="flex-1"
+                  >
+                    {isLoading ? 'Salvando...' : 'Salvar alterações'}
+                  </Button>
+                  
+                  <Button
+                    variant="destructive"
+                    onClick={handleLogout}
+                    className="flex-1"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sair da conta
+                  </Button>
+                </div>
+
+                {isViewer && (
+                  <div className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
+                    <strong>Aviso:</strong> Você tem permissão de visualizador. 
+                    Entre em contato com um gerente para editar suas informações.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
-
-          {isViewer && (
-            <div className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
-              <strong>Aviso:</strong> Você tem permissão de visualizador. 
-              Entre em contato com um gerente para editar suas informações.
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 

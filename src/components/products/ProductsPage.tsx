@@ -1,12 +1,15 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Edit, Trash2, Calendar } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Calendar, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 
 const ProductsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,94 +63,109 @@ const ProductsPage = () => {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Produtos Monitorados</h1>
-          <p className="text-muted-foreground mt-2">
-            Gerencie os produtos para monitoramento automático de preços
-          </p>
-        </div>
-        <Button 
-          className="bg-primary hover:bg-primary/90 h-12 px-6"
-          onClick={() => navigate("/products/add")}
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Adicionar Produto
-        </Button>
-      </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <SidebarInset>
+          <div className="flex-1 space-y-6 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate("/")}
+                  className="mb-4 p-0 h-auto hover:bg-transparent"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Voltar para Dashboard
+                </Button>
+                <h1 className="text-3xl font-bold text-foreground">Produtos Monitorados</h1>
+                <p className="text-muted-foreground mt-2">
+                  Gerencie os produtos para monitoramento automático de preços
+                </p>
+              </div>
+              <Button 
+                className="bg-primary hover:bg-primary/90 h-12 px-6"
+                onClick={() => navigate("/products/add")}
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Adicionar Produto
+              </Button>
+            </div>
 
-      <Card className="premium-shadow">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Lista de Produtos</CardTitle>
-              <CardDescription>
-                Produtos configurados para monitoramento automático
-              </CardDescription>
-            </div>
-            <div className="relative w-72">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Buscar produtos..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+            <Card className="premium-shadow">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Lista de Produtos</CardTitle>
+                    <CardDescription>
+                      Produtos configurados para monitoramento automático
+                    </CardDescription>
+                  </div>
+                  <div className="relative w-72">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      placeholder="Buscar produtos..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {filteredProducts.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">
+                      {searchTerm ? "Nenhum produto encontrado." : "Adicione os produtos que deseja monitorar"}
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nome do Produto</TableHead>
+                        <TableHead>Categoria</TableHead>
+                        <TableHead>Data da Última Busca</TableHead>
+                        <TableHead className="text-right">Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredProducts.map((product) => (
+                        <TableRow key={product.id} className="hover:bg-secondary/30">
+                          <TableCell className="font-medium">{product.name}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{product.category}</Badge>
+                          </TableCell>
+                          <TableCell className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-muted-foreground" />
+                            {product.lastSearchDate}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="ghost" size="sm" className="mr-2">
+                              <Edit className="w-4 h-4" />
+                              Editar
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => handleRemoveProduct(product.id)}
+                            >
+                              <Trash2 className="w-4 h-4 mr-1" />
+                              Remover
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
           </div>
-        </CardHeader>
-        <CardContent>
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
-                {searchTerm ? "Nenhum produto encontrado." : "Adicione os produtos que deseja monitorar"}
-              </p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome do Produto</TableHead>
-                  <TableHead>Categoria</TableHead>
-                  <TableHead>Data da Última Busca</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredProducts.map((product) => (
-                  <TableRow key={product.id} className="hover:bg-secondary/30">
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{product.category}</Badge>
-                    </TableCell>
-                    <TableCell className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
-                      {product.lastSearchDate}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="mr-2">
-                        <Edit className="w-4 h-4" />
-                        Editar
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => handleRemoveProduct(product.id)}
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Remover
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 
