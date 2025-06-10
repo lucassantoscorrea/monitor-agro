@@ -11,7 +11,7 @@ import {
   SidebarHeader,
   SidebarFooter
 } from "@/components/ui/sidebar";
-import { Leaf, Calendar, FileText, User } from "lucide-react";
+import { Leaf, Calendar, FileText, User, Users } from "lucide-react";
 
 const menuItems = [
   {
@@ -23,6 +23,11 @@ const menuItems = [
     title: "Relatórios",
     url: "/reports",
     icon: FileText,
+  },
+  {
+    title: "Usuários",
+    url: "/users",
+    icon: Users,
   },
   {
     title: "Perfil",
