@@ -3,16 +3,23 @@ import { useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import LoginPage from "@/components/auth/LoginPage";
+import OrganizationSelectPage from "@/components/auth/OrganizationSelectPage";
 import DashboardPage from "@/components/dashboard/DashboardPage";
 import ProductsPage from "@/components/products/ProductsPage";
 import ReportsPage from "@/components/reports/ReportsPage";
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasSelectedOrganization, setHasSelectedOrganization] = useState(false);
   const [currentPage, setCurrentPage] = useState("dashboard");
 
   const handleLogin = () => {
     setIsAuthenticated(true);
+  };
+
+  const handleSelectOrganization = (orgId: string) => {
+    console.log("Selected organization:", orgId);
+    setHasSelectedOrganization(true);
   };
 
   const renderPage = () => {
@@ -28,6 +35,10 @@ const Index = () => {
 
   if (!isAuthenticated) {
     return <LoginPage onLogin={handleLogin} />;
+  }
+
+  if (!hasSelectedOrganization) {
+    return <OrganizationSelectPage onSelectOrganization={handleSelectOrganization} />;
   }
 
   return (
