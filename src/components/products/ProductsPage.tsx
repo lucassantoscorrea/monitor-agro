@@ -5,58 +5,58 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Edit, Calendar } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Calendar } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const ProductsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { toast } = useToast();
 
-  const products = [
+  const [products, setProducts] = useState([
     {
       id: 1,
       name: "ROUNDUP ORIGINAL DI",
       category: "Herbicida",
-      lastSearch: "Hoje 08:30",
-      status: "Ativo",
-      resultsCount: 8
+      lastSearchDate: "10/06/2025 08:30"
     },
     {
       id: 2,
       name: "NATIVO SC",
       category: "Fungicida", 
-      lastSearch: "Hoje 08:30",
-      status: "Ativo",
-      resultsCount: 5
+      lastSearchDate: "10/06/2025 08:30"
     },
     {
       id: 3,
       name: "KARATE ZEON 50 CS",
       category: "Inseticida",
-      lastSearch: "Hoje 08:30",
-      status: "Ativo",
-      resultsCount: 12
+      lastSearchDate: "10/06/2025 08:30"
     },
     {
       id: 4,
       name: "TORDON 2,4-D",
       category: "Herbicida",
-      lastSearch: "Hoje 08:30",
-      status: "Ativo",
-      resultsCount: 3
+      lastSearchDate: "10/06/2025 08:30"
     },
     {
       id: 5,
       name: "GRAMOXONE 200",
       category: "Herbicida",
-      lastSearch: "Ontem 14:00",
-      status: "Ativo",
-      resultsCount: 7
+      lastSearchDate: "09/06/2025 14:00"
     }
-  ];
+  ]);
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleRemoveProduct = (productId: number) => {
+    setProducts(prev => prev.filter(p => p.id !== productId));
+    toast({
+      title: "Produto removido com sucesso",
+      description: "O produto foi removido da lista de monitoramento.",
+    });
+  };
 
   return (
     <div className="flex-1 space-y-6 p-6">
@@ -71,37 +71,6 @@ const ProductsPage = () => {
           <Plus className="w-5 h-5 mr-2" />
           Adicionar Produto
         </Button>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-4 mb-6">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-primary">{products.length}</div>
-            <p className="text-sm text-muted-foreground">Total de Produtos</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-accent">
-              {products.filter(p => p.lastSearch.includes('Hoje')).length}
-            </div>
-            <p className="text-sm text-muted-foreground">Buscas Hoje</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-green-600">
-              {products.reduce((sum, p) => sum + p.resultsCount, 0)}
-            </div>
-            <p className="text-sm text-muted-foreground">Resultados Encontrados</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-primary">100%</div>
-            <p className="text-sm text-muted-foreground">Taxa de Sucesso</p>
-          </CardContent>
-        </Card>
       </div>
 
       <Card className="premium-shadow">
@@ -137,9 +106,7 @@ const ProductsPage = () => {
                 <TableRow>
                   <TableHead>Nome do Produto</TableHead>
                   <TableHead>Categoria</TableHead>
-                  <TableHead>Última Busca</TableHead>
-                  <TableHead>Resultados</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Data da Última Busca</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -152,21 +119,20 @@ const ProductsPage = () => {
                     </TableCell>
                     <TableCell className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-muted-foreground" />
-                      {product.lastSearch}
-                    </TableCell>
-                    <TableCell>
-                      <span className="font-medium text-green-600">{product.resultsCount} encontrados</span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                        {product.status}
-                      </Badge>
+                      {product.lastSearchDate}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="sm" className="mr-2">
                         <Edit className="w-4 h-4" />
+                        Editar
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-destructive hover:text-destructive"
+                        onClick={() => handleRemoveProduct(product.id)}
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
                         Remover
                       </Button>
                     </TableCell>
