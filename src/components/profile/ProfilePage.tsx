@@ -45,16 +45,6 @@ const ProfilePage = () => {
     }
   };
 
-  const handleLogout = () => {
-    toast.success('Saindo da conta...');
-    // Clear authentication and redirect to login
-    setTimeout(() => {
-      // Reset authentication state by reloading the page
-      // This will trigger the authentication check in App.tsx
-      window.location.href = '/';
-    }, 1000);
-  };
-
   const handleInputChange = (field: keyof User, value: string) => {
     if (!isViewer) {
       setUser(prev => ({ ...prev, [field]: value }));
@@ -91,7 +81,6 @@ const ProfilePage = () => {
                       isViewer={isViewer}
                       isLoading={isLoading}
                       onSave={handleSave}
-                      onLogout={handleLogout}
                     />
                   </CardContent>
                 </Card>

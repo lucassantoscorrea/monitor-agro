@@ -2,15 +2,26 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
+import { toast } from '@/components/ui/sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface UserActionsProps {
   isViewer: boolean;
   isLoading: boolean;
   onSave: () => void;
-  onLogout: () => void;
 }
 
-const UserActions = ({ isViewer, isLoading, onSave, onLogout }: UserActionsProps) => {
+const UserActions = ({ isViewer, isLoading, onSave }: UserActionsProps) => {
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    toast.success('Saindo da conta...');
+    // Reset authentication state immediately
+    setTimeout(() => {
+      logout();
+    }, 1000);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-4 pt-6">
@@ -24,7 +35,7 @@ const UserActions = ({ isViewer, isLoading, onSave, onLogout }: UserActionsProps
         
         <Button
           variant="destructive"
-          onClick={onLogout}
+          onClick={handleLogout}
           className="flex-1"
         >
           <LogOut className="w-4 h-4 mr-2" />
