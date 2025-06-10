@@ -4,17 +4,42 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Edit, Trash2, Calendar } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus, Search, Edit, Trash2, Calendar, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 
 const ProductsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [productName, setProductName] = useState("");
+  const [category, setCategory] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
+
+  // Sugestões de produtos para autocomplete
+  const productSuggestions = [
+    "ROUNDUP ORIGINAL DI",
+    "NATIVO SC",
+    "KARATE ZEON 50 CS",
+    "TORDON 2,4-D",
+    "GRAMOXONE 200",
+    "CONNECT",
+    "PRIMÓLEO",
+    "VERDICT R",
+    "POLO 500 WP",
+    "ACTARA 250 WG"
+  ];
+
+  const filteredSuggestions = productSuggestions.filter(suggestion =>
+    suggestion.toLowerCase().includes(productName.toLowerCase())
+  );
 
   const [products, setProducts] = useState([
     {
@@ -62,6 +87,46 @@ const ProductsPage = () => {
     });
   };
 
+  const handleSaveProduct = async () => {
+    if (!productName.trim()) {
+      toast({
+        title: "Erro",
+        description: "Informe o nome do produto",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Simular salvamento
+    setTimeout(() => {
+      const newProduct = {
+        id: products.length + 1,
+        name: productName,
+        category: category || "Sem categoria",
+        lastSearchDate: new Date().toLocaleString("pt-BR")
+      };
+      
+      setProducts(prev => [...prev, newProduct]);
+      setIsLoading(false);
+      setIsDialogOpen(false);
+      setProductName("");
+      setCategory("");
+      setShowSuggestions(false);
+      
+      toast({
+        title: "Sucesso",
+        description: "Produto adicionado com sucesso",
+      });
+    }, 1500);
+  };
+
+  const handleProductSelect = (selectedProduct: string) => {
+    setProductName(selectedProduct);
+    setShowSuggestions(false);
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -75,13 +140,104 @@ const ProductsPage = () => {
                   Gerencie os produtos para monitoramento automático de preços
                 </p>
               </div>
-              <Button 
-                className="bg-primary hover:bg-primary/90 h-12 px-6"
-                onClick={() => navigate("/products/add")}
-              >
-                <Plus className="w-5 h-5 mr-2" />
-                Adicionar Produto
-              </Button>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-primary hover:bg-primary/90 h-12 px-6">
+                    <Plus className="w-5 h-5 mr-2" />
+                    Adicionar Produto
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Adicionar Produto</DialogTitle>
+                    <DialogDescription>
+                      Cadastre um novo produto para monitoramento de preços
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="productName">Nome do Produto *</Label>
+                      <div className="relative">
+                        <Input
+                          id="productName"
+                          placeholder="Digite o nome do produto..."
+                          value={productName}
+                          onChange={(e) => {
+                            setProductName(e.target.value);
+                            setShowSuggestions(true);
+                          }}
+                          onFocus={() => setShowSuggestions(true)}
+                          className="w-full"
+                        />
+                        
+                        {showSuggestions && productName && filteredSuggestions.length > 0 && (
+                          <div className="absolute top-full left-0 right-0 z-50 mt-1">
+                            <Command className="rounded-lg border shadow-md">
+                              <CommandList>
+                                <CommandEmpty>Nenhum produto encontrado.</CommandEmpty>
+                                <CommandGroup>
+                                  {filteredSuggestions.map((suggestion) => (
+                                    <CommandItem
+                                      key={suggestion}
+                                      onSelect={() => handleProductSelect(suggestion)}
+                                      className="cursor-pointer"
+                                    >
+                                      {suggestion}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="category">Categoria (opcional)</Label>
+                      <Select value={category} onValueChange={setCategory}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione uma categoria" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Herbicida">Herbicida</SelectItem>
+                          <SelectItem value="Fungicida">Fungicida</SelectItem>
+                          <SelectItem value="Inseticida">Inseticida</SelectItem>
+                          <SelectItem value="Acaricida">Acaricida</SelectItem>
+                          <SelectItem value="Nematicida">Nematicida</SelectItem>
+                          <SelectItem value="Fertilizante">Fertilizante</SelectItem>
+                          <SelectItem value="Adjuvante">Adjuvante</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex gap-4 pt-4">
+                      <Button
+                        onClick={handleSaveProduct}
+                        disabled={isLoading}
+                        className="flex-1"
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Salvando...
+                          </>
+                        ) : (
+                          "Salvar Produto"
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsDialogOpen(false)}
+                        disabled={isLoading}
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
 
             <Card className="premium-shadow">
