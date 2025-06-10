@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/sonner';
 import { LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import PasswordGenerator from './PasswordGenerator';
@@ -21,7 +20,6 @@ interface User {
 }
 
 const ProfilePage = () => {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   
   // Mock user data - in real app this would come from authentication context
@@ -64,9 +62,11 @@ const ProfilePage = () => {
 
   const handleLogout = () => {
     toast.success('Saindo da conta...');
-    // In real app, this would clear authentication state
+    // Clear authentication and redirect to login
     setTimeout(() => {
-      navigate('/');
+      // Reset authentication state by reloading the page
+      // This will trigger the authentication check in App.tsx
+      window.location.href = '/';
     }, 1000);
   };
 
