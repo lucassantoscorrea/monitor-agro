@@ -4,15 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Edit, Trash2, Users } from "lucide-react";
+import { Plus, Search, Trash2, Users } from "lucide-react";
 import { useState } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
+import { useToast } from "@/hooks/use-toast";
+import EditUserDialog from "./EditUserDialog";
 
 const UsersPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { toast } = useToast();
 
-  const users = [
+  const [users, setUsers] = useState([
     {
       id: 1,
       name: "João Silva",
@@ -37,13 +40,21 @@ const UsersPage = () => {
       status: "Inativo",
       lastAccess: "05/06/2025 14:20"
     }
-  ];
+  ]);
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleRemoveUser = (userId: number) => {
+    setUsers(prev => prev.filter(u => u.id !== userId));
+    toast({
+      title: "Usuário removido com sucesso",
+      description: "O usuário foi removido do sistema.",
+    });
+  };
 
   const getRoleBadge = (role: string) => {
     const colors = {
@@ -157,14 +168,16 @@ const UsersPage = () => {
                           <TableCell>{getStatusBadge(user.status)}</TableCell>
                           <TableCell className="text-sm text-muted-foreground">{user.lastAccess}</TableCell>
                           <TableCell className="text-right">
-                            <Button variant="ghost" size="sm" className="mr-2">
-                              <Edit className="w-4 h-4" />
-                              Editar
-                            </Button>
+                            <EditUserDialog 
+                              user={user}
+                              users={users}
+                              setUsers={setUsers}
+                            />
                             <Button 
                               variant="ghost" 
                               size="sm" 
                               className="text-destructive hover:text-destructive"
+                              onClick={() => handleRemoveUser(user.id)}
                             >
                               <Trash2 className="w-4 h-4 mr-1" />
                               Remover

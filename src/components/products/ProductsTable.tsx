@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Edit, Trash2, Calendar } from "lucide-react";
+import { Search, Trash2, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import EditProductDialog from "./EditProductDialog";
 
 interface Product {
   id: number;
@@ -87,10 +88,11 @@ const ProductsTable = ({ products, setProducts, searchTerm, setSearchTerm }: Pro
                     {product.lastSearchDate}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm" className="mr-2">
-                      <Edit className="w-4 h-4" />
-                      Editar
-                    </Button>
+                    <EditProductDialog 
+                      product={product}
+                      products={products}
+                      setProducts={setProducts}
+                    />
                     <Button 
                       variant="ghost" 
                       size="sm" 
