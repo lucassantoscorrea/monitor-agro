@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,10 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Search, Edit, Trash2, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const ProductsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const [products, setProducts] = useState([
     {
@@ -67,7 +68,10 @@ const ProductsPage = () => {
             Gerencie os produtos para monitoramento automático de preços
           </p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90 h-12 px-6">
+        <Button 
+          className="bg-primary hover:bg-primary/90 h-12 px-6"
+          onClick={() => navigate("/products/add")}
+        >
           <Plus className="w-5 h-5 mr-2" />
           Adicionar Produto
         </Button>
