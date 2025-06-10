@@ -1,16 +1,52 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Leaf, FileText, Calendar, Plus, Users } from "lucide-react";
+import AddProductDialog from "@/components/products/AddProductDialog";
+import { listedProducts } from "@/data/listedProducts";
 
 const DashboardPage = () => {
-  const hasProducts = true; // This would come from your data/state management
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      name: "ROUNDUP ORIGINAL DI",
+      category: "Herbicida",
+      lastSearchDate: "10/06/2025 08:30"
+    },
+    {
+      id: 2,
+      name: "NATIVO SC",
+      category: "Fungicida", 
+      lastSearchDate: "10/06/2025 08:30"
+    },
+    {
+      id: 3,
+      name: "KARATE ZEON 50 CS",
+      category: "Inseticida",
+      lastSearchDate: "10/06/2025 08:30"
+    },
+    {
+      id: 4,
+      name: "TORDON 2,4-D",
+      category: "Herbicida",
+      lastSearchDate: "10/06/2025 08:30"
+    },
+    {
+      id: 5,
+      name: "GRAMOXONE 200",
+      category: "Herbicida",
+      lastSearchDate: "09/06/2025 14:00"
+    }
+  ]);
+
+  const hasProducts = products.length > 0;
   
   const stats = [
     {
       title: "Produtos Monitorados",
-      value: hasProducts ? "12" : "0",
+      value: hasProducts ? products.length.toString() : "0",
       description: hasProducts ? "Ativos no sistema" : "Nenhum produto cadastrado",
       icon: Leaf,
       color: "text-primary"
@@ -31,12 +67,7 @@ const DashboardPage = () => {
     }
   ];
 
-  const recentProducts = [
-    { name: "ROUNDUP ORIGINAL DI", category: "Herbicida", lastUpdate: "Hoje 08:30", status: "Ativo" },
-    { name: "NATIVO SC", category: "Fungicida", lastUpdate: "Hoje 08:30", status: "Ativo" },
-    { name: "KARATE ZEON 50 CS", category: "Inseticida", lastUpdate: "Hoje 08:30", status: "Ativo" },
-    { name: "TORDON 2,4-D", category: "Herbicida", lastUpdate: "Hoje 08:30", status: "Ativo" }
-  ];
+  const recentProducts = products.slice(0, 4);
 
   const nextSearchDate = "Hoje às 14:00";
 
@@ -49,10 +80,11 @@ const DashboardPage = () => {
             Gerencie seus produtos e acompanhe os preços do mercado
           </p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90 h-12 px-6">
-          <Plus className="w-5 h-5 mr-2" />
-          Adicionar Produto
-        </Button>
+        <AddProductDialog 
+          products={products}
+          setProducts={setProducts}
+          listedProducts={listedProducts}
+        />
       </div>
 
       {/* Aviso da próxima busca */}
@@ -110,9 +142,9 @@ const DashboardPage = () => {
                     </div>
                     <div className="text-right">
                       <Badge variant="secondary" className="mb-1">
-                        {product.status}
+                        Ativo
                       </Badge>
-                      <p className="text-xs text-muted-foreground">{product.lastUpdate}</p>
+                      <p className="text-xs text-muted-foreground">{product.lastSearchDate}</p>
                     </div>
                   </div>
                 ))}
@@ -135,7 +167,7 @@ const DashboardPage = () => {
                 <div className="flex items-center justify-between p-4 rounded-lg bg-accent/10 border border-accent/20">
                   <div>
                     <h4 className="font-medium text-foreground">Busca Programada</h4>
-                    <p className="text-sm text-muted-foreground">12 produtos monitorados</p>
+                    <p className="text-sm text-muted-foreground">{products.length} produtos monitorados</p>
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-accent">{nextSearchDate}</p>
@@ -164,10 +196,11 @@ const DashboardPage = () => {
             <p className="text-muted-foreground text-center mb-6 max-w-md">
               Comece adicionando produtos para monitorar preços e receber relatórios automáticos do mercado.
             </p>
-            <Button className="bg-primary hover:bg-primary/90">
-              <Plus className="w-5 h-5 mr-2" />
-              Adicionar Primeiro Produto
-            </Button>
+            <AddProductDialog 
+              products={products}
+              setProducts={setProducts}
+              listedProducts={listedProducts}
+            />
           </CardContent>
         </Card>
       )}
