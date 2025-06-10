@@ -56,8 +56,12 @@ export function AppSidebar() {
     <Sidebar className="border-r border-sidebar-border">
       <SidebarHeader className="p-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center">
-            <Leaf className="w-5 h-5 text-accent-foreground" />
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
+            <img 
+              src="/lovable-uploads/831a7a09-6590-47af-af1a-9ffe4a8825fd.png" 
+              alt="MonitorAgro Logo" 
+              className="w-10 h-10 object-contain"
+            />
           </div>
           <div>
             <h2 className="font-bold text-lg text-sidebar-foreground">MonitorAgro</h2>
