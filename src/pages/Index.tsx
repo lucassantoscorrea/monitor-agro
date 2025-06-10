@@ -3,6 +3,7 @@ import { useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import LoginPage from "@/components/auth/LoginPage";
+import ForgotPasswordPage from "@/components/auth/ForgotPasswordPage";
 import OrganizationSelectPage from "@/components/auth/OrganizationSelectPage";
 import DashboardPage from "@/components/dashboard/DashboardPage";
 import ProductsPage from "@/components/products/ProductsPage";
@@ -12,6 +13,7 @@ const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hasSelectedOrganization, setHasSelectedOrganization] = useState(false);
   const [currentPage, setCurrentPage] = useState("dashboard");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -20,6 +22,14 @@ const Index = () => {
   const handleSelectOrganization = (orgId: string) => {
     console.log("Selected organization:", orgId);
     setHasSelectedOrganization(true);
+  };
+
+  const handleForgotPassword = () => {
+    setShowForgotPassword(true);
+  };
+
+  const handleBackToLogin = () => {
+    setShowForgotPassword(false);
   };
 
   const renderPage = () => {
@@ -34,7 +44,10 @@ const Index = () => {
   };
 
   if (!isAuthenticated) {
-    return <LoginPage onLogin={handleLogin} />;
+    if (showForgotPassword) {
+      return <ForgotPasswordPage onBackToLogin={handleBackToLogin} />;
+    }
+    return <LoginPage onLogin={handleLogin} onForgotPassword={handleForgotPassword} />;
   }
 
   if (!hasSelectedOrganization) {

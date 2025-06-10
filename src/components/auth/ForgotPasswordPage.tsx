@@ -4,17 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf } from "lucide-react";
+import { Leaf, ArrowLeft } from "lucide-react";
 
-interface LoginPageProps {
-  onLogin: () => void;
-  onForgotPassword: () => void;
+interface ForgotPasswordPageProps {
+  onBackToLogin: () => void;
 }
 
-const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
+const ForgotPasswordPage = ({ onBackToLogin }: ForgotPasswordPageProps) => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,17 +21,50 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
     setIsLoading(true);
     setError("");
 
-    // Simular autenticação
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Simular envio de email
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    if (email && password) {
-      onLogin();
+    if (email) {
+      setIsSuccess(true);
     } else {
-      setError("Credenciais inválidas");
+      setError("Digite um e-mail válido");
     }
     
     setIsLoading(false);
   };
+
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5 p-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4 shadow-lg">
+              <Leaf className="w-8 h-8 text-primary-foreground" />
+            </div>
+            <h1 className="text-3xl font-bold text-primary mb-2">MonitorAgro</h1>
+            <p className="text-muted-foreground">Monitoramento inteligente de preços agrícolas</p>
+          </div>
+
+          <Card className="glass-effect premium-shadow">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-2xl">E-mail Enviado!</CardTitle>
+              <CardDescription>
+                Verifique sua caixa de entrada e siga as instruções para redefinir sua senha
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={onBackToLogin}
+                className="w-full h-12 text-lg font-medium"
+              >
+                Voltar ao Login
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5 p-4">
@@ -47,9 +79,9 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
 
         <Card className="glass-effect premium-shadow">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl">Entrar no MonitorAgro</CardTitle>
+            <CardTitle className="text-2xl">Esqueci minha senha</CardTitle>
             <CardDescription>
-              Acesse sua conta para monitorar preços de defensivos
+              Digite seu e-mail para receber instruções de redefinição
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -66,19 +98,6 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
                   required
                 />
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12"
-                  required
-                />
-              </div>
 
               {error && (
                 <div className="text-destructive text-sm bg-destructive/10 p-3 rounded-md">
@@ -91,18 +110,18 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
                 className="w-full h-12 text-lg font-medium"
                 disabled={isLoading}
               >
-                {isLoading ? "Entrando..." : "Entrar"}
+                {isLoading ? "Enviando..." : "Enviar instruções"}
               </Button>
 
-              <div className="text-center">
-                <button 
-                  type="button"
-                  onClick={onForgotPassword}
-                  className="text-primary hover:text-primary/80 text-sm font-medium"
-                >
-                  Esqueci minha senha
-                </button>
-              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={onBackToLogin}
+                className="w-full h-12 text-lg font-medium"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Voltar ao login
+              </Button>
             </form>
           </CardContent>
         </Card>
@@ -111,4 +130,4 @@ const LoginPage = ({ onLogin, onForgotPassword }: LoginPageProps) => {
   );
 };
 
-export default LoginPage;
+export default ForgotPasswordPage;
