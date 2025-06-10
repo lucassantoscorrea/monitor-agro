@@ -55,18 +55,12 @@ export function AppSidebar() {
   return (
     <Sidebar className="border-r border-sidebar-border">
       <SidebarHeader className="p-6">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 flex items-center justify-center">
-            <img 
-              src="/lovable-uploads/f446b00f-32df-4e2b-ad30-2cabce6ba09e.png" 
-              alt="MonitorAgro Logo" 
-              className="w-12 h-12 object-contain"
-            />
-          </div>
-          <div>
-            <h2 className="font-bold text-lg text-sidebar-foreground">MonitorAgro</h2>
-            <p className="text-xs text-sidebar-foreground/70">Agro Solutions</p>
-          </div>
+        <div className="flex items-center justify-center">
+          <img 
+            src="/lovable-uploads/6dac44d4-275c-49b5-bbe1-4095e09cfbc4.png" 
+            alt="MonitorAgro Logo" 
+            className="h-12 object-contain"
+          />
         </div>
       </SidebarHeader>
       
