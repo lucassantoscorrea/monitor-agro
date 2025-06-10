@@ -59,7 +59,7 @@ export function AppSidebar() {
           <img 
             src="/lovable-uploads/6dac44d4-275c-49b5-bbe1-4095e09cfbc4.png" 
             alt="MonitorAgro Logo" 
-            className="h-12 object-contain"
+            className="h-20 w-auto object-contain"
           />
         </div>
       </SidebarHeader>
