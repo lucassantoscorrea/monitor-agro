@@ -3,9 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Download, Calendar, Eye } from "lucide-react";
+import { FileText, Calendar, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ReportsPage = () => {
+  const navigate = useNavigate();
+
   const reports = [
     {
       id: 1,
@@ -46,6 +49,10 @@ const ReportsPage = () => {
       return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Completo</Badge>;
     }
     return <Badge variant="outline" className="border-yellow-500 text-yellow-700">Parcial</Badge>;
+  };
+
+  const handleViewReport = (reportId: number) => {
+    navigate(`/reports/${reportId}`);
   };
 
   return (
@@ -132,16 +139,21 @@ const ReportsPage = () => {
                       {getStatusBadge(report.status)}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="mr-2">
-                        <Eye className="w-4 h-4 mr-1" />
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="mr-2"
+                        onClick={() => handleViewReport(report.id)}
+                      >
+                        <ArrowLeft className="w-4 h-4 mr-1" />
                         Visualizar
                       </Button>
                       <Button variant="ghost" size="sm" className="mr-2">
-                        <Download className="w-4 h-4 mr-1" />
+                        <FileText className="w-4 h-4 mr-1" />
                         Excel
                       </Button>
                       <Button variant="ghost" size="sm">
-                        <Download className="w-4 h-4 mr-1" />
+                        <FileText className="w-4 h-4 mr-1" />
                         PDF
                       </Button>
                     </TableCell>
