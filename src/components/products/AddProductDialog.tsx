@@ -1,16 +1,12 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Plus, Loader2, Check, ChevronsUpDown } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+import ListedProductsTab from "./ListedProductsTab";
+import GenericProductsTab from "./GenericProductsTab";
 
 interface Product {
   id: number;
@@ -40,7 +36,6 @@ const AddProductDialog = ({ products, setProducts, listedProducts }: AddProductD
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("listed");
   const [selectedProduct, setSelectedProduct] = useState("");
-  const [openProductCombobox, setOpenProductCombobox] = useState(false);
   const { toast } = useToast();
 
   const handleSaveProduct = async () => {
@@ -88,10 +83,7 @@ const AddProductDialog = ({ products, setProducts, listedProducts }: AddProductD
       setProducts(prev => [...prev, newProduct]);
       setIsLoading(false);
       setIsDialogOpen(false);
-      setProductName("");
-      setCategory("");
-      setSelectedProduct("");
-      setActiveTab("listed");
+      resetForm();
       
       toast({
         title: "Sucesso",
@@ -132,106 +124,21 @@ const AddProductDialog = ({ products, setProducts, listedProducts }: AddProductD
             <TabsTrigger value="generic">Produtos Genéricos</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="listed" className="space-y-4">
-            <div className="space-y-2">
-              <Label>Produto *</Label>
-              <Popover open={openProductCombobox} onOpenChange={setOpenProductCombobox}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={openProductCombobox}
-                    className="w-full justify-between"
-                  >
-                    {selectedProduct
-                      ? listedProducts.find((product) => product.id === selectedProduct)?.comercialName
-                      : "Selecione um produto..."}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput placeholder="Buscar por nome comercial, princípio ativo ou fabricante..." />
-                    <CommandEmpty>Nenhum produto encontrado.</CommandEmpty>
-                    <CommandList>
-                      <CommandGroup>
-                        {listedProducts.map((product) => (
-                          <CommandItem
-                            key={product.id}
-                            value={product.id}
-                            onSelect={(currentValue) => {
-                              setSelectedProduct(currentValue === selectedProduct ? "" : currentValue);
-                              setOpenProductCombobox(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                selectedProduct === product.id ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                            <div className="flex flex-col">
-                              <span className="font-medium">{product.comercialName}</span>
-                              <span className="text-sm text-muted-foreground">
-                                {product.activeIngredient} - {product.manufacturer}
-                              </span>
-                            </div>
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
-            
-            {selectedProduct && (
-              <div className="p-4 bg-muted rounded-lg">
-                <h4 className="font-medium mb-2">Informações do Produto</h4>
-                {(() => {
-                  const product = listedProducts.find(p => p.id === selectedProduct);
-                  return product ? (
-                    <div className="space-y-1 text-sm">
-                      <p><strong>Nome Comercial:</strong> {product.comercialName}</p>
-                      <p><strong>Princípio Ativo:</strong> {product.activeIngredient}</p>
-                      <p><strong>Fabricante:</strong> {product.manufacturer}</p>
-                      <p><strong>Categoria:</strong> {product.category}</p>
-                    </div>
-                  ) : null;
-                })()}
-              </div>
-            )}
+          <TabsContent value="listed">
+            <ListedProductsTab 
+              listedProducts={listedProducts}
+              selectedProduct={selectedProduct}
+              setSelectedProduct={setSelectedProduct}
+            />
           </TabsContent>
           
-          <TabsContent value="generic" className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="productName">Nome do Produto *</Label>
-              <Input
-                id="productName"
-                placeholder="Digite o nome do produto..."
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
-                className="w-full"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="category">Categoria *</Label>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma categoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Herbicida">Herbicida</SelectItem>
-                  <SelectItem value="Fungicida">Fungicida</SelectItem>
-                  <SelectItem value="Inseticida">Inseticida</SelectItem>
-                  <SelectItem value="Acaricida">Acaricida</SelectItem>
-                  <SelectItem value="Nematicida">Nematicida</SelectItem>
-                  <SelectItem value="Fertilizante">Fertilizante</SelectItem>
-                  <SelectItem value="Adjuvante">Adjuvante</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <TabsContent value="generic">
+            <GenericProductsTab 
+              productName={productName}
+              setProductName={setProductName}
+              category={category}
+              setCategory={setCategory}
+            />
           </TabsContent>
         </Tabs>
 
