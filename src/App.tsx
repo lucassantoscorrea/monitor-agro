@@ -11,6 +11,7 @@ import ProductsPage from "./components/products/ProductsPage";
 import ReportViewPage from "./components/reports/ReportViewPage";
 import ReportsPage from "./components/reports/ReportsPage";
 import ProfilePage from "./components/profile/ProfilePage";
+import UsersPage from "./components/users/UsersPage";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/products/add" element={<AddProductPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/reports/:id" element={<ReportViewPage />} />
+          <Route path="/users" element={<UsersPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

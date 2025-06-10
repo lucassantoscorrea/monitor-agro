@@ -11,9 +11,15 @@ import {
   SidebarHeader,
   SidebarFooter
 } from "@/components/ui/sidebar";
-import { Leaf, Calendar, FileText, User, Users } from "lucide-react";
+import { Leaf, FileText, User, Users, Home } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
+  {
+    title: "Dashboard",
+    url: "/",
+    icon: Home,
+  },
   {
     title: "Produtos Monitorados",
     url: "/products",
@@ -37,6 +43,15 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
+  const location = useLocation();
+
+  const isActive = (url: string) => {
+    if (url === "/") {
+      return location.pathname === "/";
+    }
+    return location.pathname.startsWith(url);
+  };
+
   return (
     <Sidebar className="border-r border-sidebar-border">
       <SidebarHeader className="p-6">
@@ -58,11 +73,15 @@ export function AppSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="h-12">
-                    <a href={item.url} className="flex items-center gap-3 text-sidebar-foreground hover:text-sidebar-primary hover:bg-sidebar-accent transition-colors">
+                  <SidebarMenuButton 
+                    asChild 
+                    className="h-12"
+                    isActive={isActive(item.url)}
+                  >
+                    <Link to={item.url} className="flex items-center gap-3 text-sidebar-foreground hover:text-sidebar-primary hover:bg-sidebar-accent transition-colors">
                       <item.icon className="w-5 h-5" />
                       <span className="font-medium">{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

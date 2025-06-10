@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Calendar, ArrowLeft } from "lucide-react";
+import { FileText, Calendar, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
@@ -65,14 +65,6 @@ const ReportsPage = () => {
           <div className="flex-1 space-y-6 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate("/")}
-                  className="mb-4 p-0 h-auto hover:bg-transparent"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Voltar para Dashboard
-                </Button>
                 <h1 className="text-3xl font-bold text-foreground">Relatórios</h1>
                 <p className="text-muted-foreground mt-2">
                   Histórico de buscas e resultados de preços
@@ -159,7 +151,7 @@ const ReportsPage = () => {
                               className="mr-2"
                               onClick={() => handleViewReport(report.id)}
                             >
-                              <ArrowLeft className="w-4 h-4 mr-1" />
+                              <ArrowRight className="w-4 h-4 mr-1" />
                               Visualizar
                             </Button>
                             <Button variant="ghost" size="sm" className="mr-2">

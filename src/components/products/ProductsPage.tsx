@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Edit, Trash2, Calendar, ArrowLeft } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
@@ -70,14 +70,6 @@ const ProductsPage = () => {
           <div className="flex-1 space-y-6 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate("/")}
-                  className="mb-4 p-0 h-auto hover:bg-transparent"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Voltar para Dashboard
-                </Button>
                 <h1 className="text-3xl font-bold text-foreground">Produtos Monitorados</h1>
                 <p className="text-muted-foreground mt-2">
                   Gerencie os produtos para monitoramento automático de preços
