@@ -1,15 +1,15 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Trash2, Users } from "lucide-react";
+import { Search, Trash2, Users } from "lucide-react";
 import { useState } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { useToast } from "@/hooks/use-toast";
 import EditUserDialog from "./EditUserDialog";
+import AddUserDialog from "./AddUserDialog";
 
 const UsersPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -85,10 +85,7 @@ const UsersPage = () => {
                   Gerencie usuários e suas permissões no sistema
                 </p>
               </div>
-              <Button className="bg-primary hover:bg-primary/90 h-12 px-6">
-                <Plus className="w-5 h-5 mr-2" />
-                Adicionar Usuário
-              </Button>
+              <AddUserDialog users={users} setUsers={setUsers} />
             </div>
 
             <div className="grid gap-6 md:grid-cols-3 mb-6">
