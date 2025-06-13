@@ -54,33 +54,42 @@ export const useUsers = () => {
     }
 
     try {
-      // Primeiro, criar o usuário no auth
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      // Enviar convite para o usuário se cadastrar
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
-        password: 'TempPassword123!', // Senha temporária
-        email_confirm: true,
-        user_metadata: {
-          name: name
+        password: Math.random().toString(36).slice(-8) + 'A1!', // Senha temporária
+        options: {
+          data: {
+            name: name,
+            organization_id: profile.organization_id,
+            role: role
+          },
+          emailRedirectTo: `${window.location.origin}/auth`
         }
       });
 
-      if (authError) {
-        throw authError;
+      if (signUpError) {
+        throw signUpError;
       }
 
-      // Depois, criar o perfil
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: authData.user.id,
-          organization_id: profile.organization_id,
-          email,
-          name,
-          role
-        });
+      console.log('Convite enviado para:', email);
+      
+      // Se o usuário foi criado, criar o perfil imediatamente
+      if (signUpData.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: signUpData.user.id,
+            organization_id: profile.organization_id,
+            email,
+            name,
+            role
+          });
 
-      if (profileError) {
-        throw profileError;
+        if (profileError) {
+          console.error('Erro ao criar perfil:', profileError);
+          // Continuar mesmo se houver erro, pois o trigger pode ter criado o perfil
+        }
       }
 
       // Recarregar lista de usuários

@@ -27,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import { useUsers } from "@/hooks/useUsers";
 
 interface AddUserFormData {
@@ -53,12 +53,20 @@ const AddUserDialog = () => {
     setLoading(true);
     try {
       await addUser(data.email, data.name, data.role);
-      toast.success("Usuário adicionado com sucesso!");
+      toast.success("Convite enviado com sucesso! O usuário receberá um e-mail para confirmar o cadastro.");
       form.reset();
       setOpen(false);
     } catch (error) {
       console.error("Erro ao adicionar usuário:", error);
-      toast.error("Erro ao adicionar usuário. Tente novamente.");
+      if (error instanceof Error) {
+        if (error.message.includes('already registered')) {
+          toast.error("Este e-mail já está cadastrado no sistema.");
+        } else {
+          toast.error(`Erro ao enviar convite: ${error.message}`);
+        }
+      } else {
+        toast.error("Erro ao enviar convite. Tente novamente.");
+      }
     } finally {
       setLoading(false);
     }
@@ -76,7 +84,7 @@ const AddUserDialog = () => {
         <DialogHeader>
           <DialogTitle>Adicionar Novo Usuário</DialogTitle>
           <DialogDescription>
-            Preencha as informações do novo usuário da organização.
+            Preencha as informações do novo usuário. Um convite será enviado por e-mail.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -84,6 +92,7 @@ const AddUserDialog = () => {
             <FormField
               control={form.control}
               name="name"
+              rules={{ required: "Nome é obrigatório" }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
@@ -98,6 +107,13 @@ const AddUserDialog = () => {
             <FormField
               control={form.control}
               name="email"
+              rules={{ 
+                required: "E-mail é obrigatório",
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: "E-mail inválido"
+                }
+              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>E-mail</FormLabel>
@@ -137,7 +153,7 @@ const AddUserDialog = () => {
                 Cancelar
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? "Adicionando..." : "Adicionar"}
+                {loading ? "Enviando convite..." : "Adicionar"}
               </Button>
             </div>
           </form>
