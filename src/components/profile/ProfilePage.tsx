@@ -10,6 +10,7 @@ import UserInfoForm from './UserInfoForm';
 import UserActions from './UserActions';
 import PasswordGenerator from './PasswordGenerator';
 import SystemCredentials from './SystemCredentials';
+import { useProfile } from '@/hooks/useProfile';
 
 interface User {
   name: string;
@@ -20,14 +21,42 @@ interface User {
 
 const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { profile, loading } = useProfile();
   
-  // Mock user data - in real app this would come from authentication context
+  // Use dados reais do perfil ou dados mock se não houver perfil
   const [user, setUser] = useState<User>({
-    name: 'João Silva',
-    email: 'joao.silva@empresa.com',
+    name: profile?.name || 'João Silva',
+    email: profile?.email || 'joao.silva@empresa.com',
     organization: 'Empresa ABC',
-    permission: 'usuario'
+    permission: (profile?.role as 'visualizador' | 'usuario' | 'administrador') || 'usuario'
   });
+
+  // Atualizar o estado quando o perfil carregar
+  React.useEffect(() => {
+    if (profile) {
+      setUser({
+        name: profile.name || 'Nome não informado',
+        email: profile.email,
+        organization: 'Empresa ABC', // Aqui pode ser expandido para buscar o nome da organização
+        permission: profile.role as 'visualizador' | 'usuario' | 'administrador'
+      });
+    }
+  }, [profile]);
+
+  if (loading) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <SidebarInset>
+            <div className="flex-1 flex items-center justify-center p-6">
+              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+            </div>
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
+    );
+  }
 
   const isViewer = user.permission === 'visualizador';
   const canEditPermissions = user.permission === 'usuario' || user.permission === 'administrador';

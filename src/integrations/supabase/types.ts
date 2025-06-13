@@ -70,7 +70,44 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      user_profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string | null
+          name: string | null
+          organization_id: string | null
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: string | null
+          name?: string | null
+          organization_id?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string | null
+          name?: string | null
+          organization_id?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never

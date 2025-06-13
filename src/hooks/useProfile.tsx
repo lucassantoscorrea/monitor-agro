@@ -27,15 +27,33 @@ export const useProfile = () => {
       }
 
       try {
+        console.log('Buscando perfil para usuário:', user.id);
+        
+        // Usar a view para evitar problemas de recursão
         const { data, error } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .select('*')
           .eq('id', user.id)
           .single();
 
         if (error) {
           console.error('Erro ao buscar perfil:', error);
+          
+          // Se a view não funcionar, tentar buscar diretamente
+          const { data: directData, error: directError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+            
+          if (directError) {
+            console.error('Erro ao buscar perfil diretamente:', directError);
+          } else {
+            console.log('Perfil encontrado diretamente:', directData);
+            setProfile(directData);
+          }
         } else {
+          console.log('Perfil encontrado:', data);
           setProfile(data);
         }
       } catch (error) {
@@ -49,6 +67,10 @@ export const useProfile = () => {
   }, [user]);
 
   const isAdmin = profile?.role === 'administrador';
+  
+  console.log('Profile:', profile);
+  console.log('IsAdmin:', isAdmin);
+  console.log('Role:', profile?.role);
 
   return {
     profile,
