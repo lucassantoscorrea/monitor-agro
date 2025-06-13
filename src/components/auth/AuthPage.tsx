@@ -13,6 +13,7 @@ const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp } = useAuth();
 
@@ -36,7 +37,7 @@ const AuthPage = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signUp(email, password, name);
+    const { error } = await signUp(email, password, name, organizationName);
     
     if (error) {
       toast.error(error.message || "Erro ao criar conta");
@@ -120,6 +121,19 @@ const AuthPage = () => {
                       placeholder="Seu nome"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
+                      className="h-12"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-organization">Nome da Organização/Empresa</Label>
+                    <Input
+                      id="signup-organization"
+                      type="text"
+                      placeholder="Nome da sua empresa"
+                      value={organizationName}
+                      onChange={(e) => setOrganizationName(e.target.value)}
                       className="h-12"
                       required
                     />
