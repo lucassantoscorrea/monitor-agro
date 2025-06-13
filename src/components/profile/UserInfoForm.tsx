@@ -8,7 +8,7 @@ interface User {
   name: string;
   email: string;
   organization: string;
-  permission: 'visualizador' | 'gerente' | 'admin';
+  permission: 'visualizador' | 'usuario' | 'administrador';
 }
 
 interface UserInfoFormProps {
@@ -28,8 +28,8 @@ const UserInfoForm = ({ user, isViewer, canEditPermissions, onInputChange }: Use
 
   const permissions = [
     { value: 'visualizador', label: 'Visualizador' },
-    { value: 'gerente', label: 'Gerente' },
-    { value: 'admin', label: 'Administrador' }
+    { value: 'usuario', label: 'Usuário' },
+    { value: 'administrador', label: 'Administrador' }
   ];
 
   return (

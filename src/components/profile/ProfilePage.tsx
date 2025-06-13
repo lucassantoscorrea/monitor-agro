@@ -15,7 +15,7 @@ interface User {
   name: string;
   email: string;
   organization: string;
-  permission: 'visualizador' | 'gerente' | 'admin';
+  permission: 'visualizador' | 'usuario' | 'administrador';
 }
 
 const ProfilePage = () => {
@@ -26,11 +26,11 @@ const ProfilePage = () => {
     name: 'João Silva',
     email: 'joao.silva@empresa.com',
     organization: 'Empresa ABC',
-    permission: 'gerente'
+    permission: 'usuario'
   });
 
   const isViewer = user.permission === 'visualizador';
-  const canEditPermissions = user.permission === 'gerente' || user.permission === 'admin';
+  const canEditPermissions = user.permission === 'usuario' || user.permission === 'administrador';
 
   const handleSave = async () => {
     setIsLoading(true);
