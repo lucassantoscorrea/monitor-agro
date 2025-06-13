@@ -9,7 +9,10 @@ import UsersTable from "./UsersTable";
 const UsersPage = () => {
   const { profile, loading, isAdmin, error } = useProfile();
 
+  console.log('UsersPage: profile:', profile, 'loading:', loading, 'isAdmin:', isAdmin, 'error:', error);
+
   if (loading) {
+    console.log('UsersPage: Mostrando loading');
     return (
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
@@ -25,6 +28,7 @@ const UsersPage = () => {
   }
 
   if (error) {
+    console.log('UsersPage: Mostrando erro:', error);
     return (
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
@@ -38,6 +42,33 @@ const UsersPage = () => {
                 <p className="text-muted-foreground">
                   {error}
                 </p>
+                <div className="mt-4 text-sm text-muted-foreground">
+                  <p>Debug: Profile = {profile ? 'presente' : 'null'}</p>
+                  <p>Debug: Role = {profile?.role || 'não definido'}</p>
+                </div>
+              </div>
+            </div>
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
+    );
+  }
+
+  if (!profile) {
+    console.log('UsersPage: Profile não encontrado');
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <SidebarInset>
+            <div className="flex-1 flex items-center justify-center p-6">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-foreground mb-2">
+                  Perfil não encontrado
+                </h1>
+                <p className="text-muted-foreground">
+                  Não foi possível carregar as informações do seu perfil.
+                </p>
               </div>
             </div>
           </SidebarInset>
@@ -47,6 +78,7 @@ const UsersPage = () => {
   }
 
   if (!isAdmin) {
+    console.log('UsersPage: Usuário não é administrador - role:', profile.role);
     return (
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
@@ -60,6 +92,10 @@ const UsersPage = () => {
                 <p className="text-muted-foreground">
                   Apenas administradores podem acessar esta página.
                 </p>
+                <div className="mt-4 text-sm text-muted-foreground">
+                  <p>Seu role atual: {profile.role}</p>
+                  <p>Role necessário: administrador</p>
+                </div>
               </div>
             </div>
           </SidebarInset>
@@ -68,6 +104,7 @@ const UsersPage = () => {
     );
   }
 
+  console.log('UsersPage: Renderizando página principal para administrador');
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">

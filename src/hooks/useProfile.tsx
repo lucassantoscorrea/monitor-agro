@@ -22,6 +22,7 @@ export const useProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       if (!user) {
+        console.log('useProfile: Usuário não autenticado');
         setProfile(null);
         setLoading(authLoading);
         setError(null);
@@ -29,6 +30,7 @@ export const useProfile = () => {
       }
 
       if (profile && profile.id === user.id) {
+        console.log('useProfile: Perfil já carregado para este usuário');
         setLoading(false);
         return;
       }
@@ -37,8 +39,19 @@ export const useProfile = () => {
         setLoading(true);
         setError(null);
         
-        console.log('Buscando perfil para usuário:', user.id);
+        console.log('useProfile: Buscando perfil para usuário:', user.id);
         
+        // Testar a função de debug primeiro
+        const { data: debugData, error: debugError } = await supabase
+          .rpc('debug_user_access');
+        
+        if (debugError) {
+          console.error('useProfile: Erro no debug:', debugError);
+        } else {
+          console.log('useProfile: Debug info:', debugData);
+        }
+        
+        // Buscar o perfil do usuário
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
@@ -46,15 +59,16 @@ export const useProfile = () => {
           .single();
 
         if (error) {
-          console.error('Erro ao buscar perfil:', error);
-          setError(error.message);
+          console.error('useProfile: Erro ao buscar perfil:', error);
+          setError(`Erro ao buscar perfil: ${error.message}`);
           setProfile(null);
         } else {
-          console.log('Perfil encontrado:', data);
+          console.log('useProfile: Perfil encontrado:', data);
+          console.log('useProfile: Role do usuário:', data?.role);
           setProfile(data);
         }
       } catch (error) {
-        console.error('Erro ao buscar perfil:', error);
+        console.error('useProfile: Erro interno:', error);
         setError('Erro interno ao buscar perfil');
         setProfile(null);
       } finally {
@@ -66,6 +80,8 @@ export const useProfile = () => {
   }, [user?.id, authLoading]);
 
   const isAdmin = profile?.role === 'administrador';
+  
+  console.log('useProfile: Estado atual - profile:', profile, 'isAdmin:', isAdmin, 'loading:', loading || authLoading);
   
   return {
     profile,

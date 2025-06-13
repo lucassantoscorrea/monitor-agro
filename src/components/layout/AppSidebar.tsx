@@ -18,37 +18,49 @@ import { useMemo } from "react";
 
 const AppSidebar = () => {
   const location = useLocation();
-  const { isAdmin } = useProfile();
+  const { isAdmin, profile, loading } = useProfile();
 
-  // Memoizar os itens do menu para evitar re-cálculos desnecessários
-  const menuItems = useMemo(() => [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: Home,
-    },
-    {
-      title: "Produtos Monitorados",
-      url: "/products",
-      icon: Leaf,
-    },
-    {
-      title: "Relatórios",
-      url: "/reports",
-      icon: FileText,
-    },
-    // Só mostra a página de usuários para administradores - verificação restaurada
-    ...(isAdmin ? [{
-      title: "Usuários",
-      url: "/users",
-      icon: Users,
-    }] : []),
-    {
+  console.log('AppSidebar: isAdmin:', isAdmin, 'profile:', profile, 'loading:', loading);
+
+  const menuItems = useMemo(() => {
+    const baseItems = [
+      {
+        title: "Dashboard",
+        url: "/dashboard",
+        icon: Home,
+      },
+      {
+        title: "Produtos Monitorados",
+        url: "/products",
+        icon: Leaf,
+      },
+      {
+        title: "Relatórios",
+        url: "/reports",
+        icon: FileText,
+      },
+    ];
+
+    // Adicionar item de usuários apenas para administradores
+    if (isAdmin) {
+      console.log('AppSidebar: Adicionando item Usuários para administrador');
+      baseItems.push({
+        title: "Usuários",
+        url: "/users",
+        icon: Users,
+      });
+    } else {
+      console.log('AppSidebar: Item Usuários não adicionado - isAdmin:', isAdmin);
+    }
+
+    baseItems.push({
       title: "Perfil",
       url: "/profile",
       icon: User,
-    },
-  ], [isAdmin]);
+    });
+
+    return baseItems;
+  }, [isAdmin]);
 
   const isActive = (url: string) => {
     if (url === "/dashboard") {
@@ -56,6 +68,8 @@ const AppSidebar = () => {
     }
     return location.pathname.startsWith(url);
   };
+
+  console.log('AppSidebar: Menu items:', menuItems.map(item => item.title));
 
   return (
     <Sidebar className="border-r border-sidebar-border">

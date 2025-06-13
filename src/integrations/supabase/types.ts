@@ -110,6 +110,14 @@ export type Database = {
       }
     }
     Functions: {
+      debug_user_access: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          current_user_id: string
+          current_user_role: string
+          is_authenticated: boolean
+        }[]
+      }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
