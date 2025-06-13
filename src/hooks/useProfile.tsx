@@ -41,17 +41,7 @@ export const useProfile = () => {
         
         console.log('useProfile: Buscando perfil para usuário:', user.id);
         
-        // Testar a função de debug primeiro
-        const { data: debugData, error: debugError } = await supabase
-          .rpc('debug_user_access');
-        
-        if (debugError) {
-          console.error('useProfile: Erro no debug:', debugError);
-        } else {
-          console.log('useProfile: Debug info:', debugData);
-        }
-        
-        // Buscar o perfil do usuário
+        // Buscar o perfil diretamente, sem usar a função que causa recursão
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
