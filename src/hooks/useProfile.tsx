@@ -14,67 +14,67 @@ export interface Profile {
 }
 
 export const useProfile = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
+      // Se não há usuário ou ainda está carregando auth, resetar estado
       if (!user) {
         setProfile(null);
+        setLoading(authLoading);
+        setError(null);
+        return;
+      }
+
+      // Se já temos o perfil para este usuário, não refazer a consulta
+      if (profile && profile.id === user.id) {
         setLoading(false);
         return;
       }
 
       try {
+        setLoading(true);
+        setError(null);
+        
         console.log('Buscando perfil para usuário:', user.id);
         
-        // Usar a view para evitar problemas de recursão
+        // Fazer apenas uma consulta direta à tabela profiles
         const { data, error } = await supabase
-          .from('user_profiles')
+          .from('profiles')
           .select('*')
           .eq('id', user.id)
           .single();
 
         if (error) {
           console.error('Erro ao buscar perfil:', error);
-          
-          // Se a view não funcionar, tentar buscar diretamente
-          const { data: directData, error: directError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single();
-            
-          if (directError) {
-            console.error('Erro ao buscar perfil diretamente:', directError);
-          } else {
-            console.log('Perfil encontrado diretamente:', directData);
-            setProfile(directData);
-          }
+          setError(error.message);
+          setProfile(null);
         } else {
           console.log('Perfil encontrado:', data);
           setProfile(data);
         }
       } catch (error) {
         console.error('Erro ao buscar perfil:', error);
+        setError('Erro interno ao buscar perfil');
+        setProfile(null);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, [user]);
+  }, [user?.id, authLoading]); // Dependências otimizadas
 
+  // Memoizar o cálculo de isAdmin para evitar re-computações
   const isAdmin = profile?.role === 'administrador';
   
-  console.log('Profile:', profile);
-  console.log('IsAdmin:', isAdmin);
-  console.log('Role:', profile?.role);
-
   return {
     profile,
-    loading,
+    loading: authLoading || loading,
+    error,
     isAdmin
   };
 };

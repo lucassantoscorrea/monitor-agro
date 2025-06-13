@@ -14,12 +14,14 @@ import {
 import { Leaf, FileText, User, Users, Home } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useProfile } from "@/hooks/useProfile";
+import { useMemo } from "react";
 
 const AppSidebar = () => {
   const location = useLocation();
   const { isAdmin } = useProfile();
 
-  const menuItems = [
+  // Memoizar os itens do menu para evitar re-cálculos desnecessários
+  const menuItems = useMemo(() => [
     {
       title: "Dashboard",
       url: "/dashboard",
@@ -46,7 +48,7 @@ const AppSidebar = () => {
       url: "/profile",
       icon: User,
     },
-  ];
+  ], [isAdmin]);
 
   const isActive = (url: string) => {
     if (url === "/dashboard") {
