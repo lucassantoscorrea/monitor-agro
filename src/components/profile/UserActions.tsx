@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 interface UserActionsProps {
   isViewer: boolean;
@@ -12,14 +12,11 @@ interface UserActionsProps {
 }
 
 const UserActions = ({ isViewer, isLoading, onSave }: UserActionsProps) => {
-  const { logout } = useAuth();
+  const { signOut } = useAuth();
 
   const handleLogout = () => {
     toast.success('Saindo da conta...');
-    // Reset authentication state immediately
-    setTimeout(() => {
-      logout();
-    }, 1000);
+    signOut();
   };
 
   return (
