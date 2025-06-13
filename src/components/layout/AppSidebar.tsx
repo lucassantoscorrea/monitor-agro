@@ -13,37 +13,40 @@ import {
 } from "@/components/ui/sidebar";
 import { Leaf, FileText, User, Users, Home } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useProfile } from "@/hooks/useProfile";
 
-const menuItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: Home,
-  },
-  {
-    title: "Produtos Monitorados",
-    url: "/products",
-    icon: Leaf,
-  },
-  {
-    title: "Relatórios",
-    url: "/reports",
-    icon: FileText,
-  },
-  {
-    title: "Usuários",
-    url: "/users",
-    icon: Users,
-  },
-  {
-    title: "Perfil",
-    url: "/profile",
-    icon: User,
-  },
-];
-
-export function AppSidebar() {
+const AppSidebar = () => {
   const location = useLocation();
+  const { isAdmin } = useProfile();
+
+  const menuItems = [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: Home,
+    },
+    {
+      title: "Produtos Monitorados",
+      url: "/products",
+      icon: Leaf,
+    },
+    {
+      title: "Relatórios",
+      url: "/reports",
+      icon: FileText,
+    },
+    // Só mostra a página de usuários para administradores
+    ...(isAdmin ? [{
+      title: "Usuários",
+      url: "/users",
+      icon: Users,
+    }] : []),
+    {
+      title: "Perfil",
+      url: "/profile",
+      icon: User,
+    },
+  ];
 
   const isActive = (url: string) => {
     if (url === "/dashboard") {
@@ -96,4 +99,6 @@ export function AppSidebar() {
       </SidebarFooter>
     </Sidebar>
   );
-}
+};
+
+export { AppSidebar };

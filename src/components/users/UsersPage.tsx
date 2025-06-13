@@ -1,40 +1,43 @@
 
-import { useState } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
+import { useProfile } from "@/hooks/useProfile";
 import AddUserDialog from "./AddUserDialog";
 import UserStats from "./UserStats";
 import UsersTable from "./UsersTable";
 
 const UsersPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const { profile, loading, isAdmin } = useProfile();
 
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "João Silva",
-      email: "joao@empresa.com",
-      role: "Administrador",
-      status: "Ativo",
-      lastAccess: "10/06/2025 09:15"
-    },
-    {
-      id: 2,
-      name: "Maria Santos",
-      email: "maria@empresa.com",
-      role: "Usuário",
-      status: "Ativo",
-      lastAccess: "09/06/2025 16:30"
-    },
-    {
-      id: 3,
-      name: "Carlos Oliveira",
-      email: "carlos@empresa.com",
-      role: "Visualizador",
-      status: "Inativo",
-      lastAccess: "05/06/2025 14:20"
-    }
-  ]);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <SidebarInset>
+            <div className="flex-1 flex items-center justify-center p-6">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-foreground mb-2">
+                  Acesso Negado
+                </h1>
+                <p className="text-muted-foreground">
+                  Apenas administradores podem acessar esta página.
+                </p>
+              </div>
+            </div>
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
+    );
+  }
 
   return (
     <SidebarProvider>
@@ -49,17 +52,11 @@ const UsersPage = () => {
                   Gerencie usuários e suas permissões no sistema
                 </p>
               </div>
-              <AddUserDialog users={users} setUsers={setUsers} />
+              <AddUserDialog />
             </div>
 
-            <UserStats users={users} />
-
-            <UsersTable 
-              users={users}
-              setUsers={setUsers}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-            />
+            <UserStats />
+            <UsersTable />
           </div>
         </SidebarInset>
       </div>
