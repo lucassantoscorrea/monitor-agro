@@ -48,7 +48,7 @@ const UsersPage = () => {
     );
   }
 
-  // Verificação de permissão de administrador - apenas uma verificação
+  // Verificação de permissão de administrador - restaurada
   if (!isAdmin) {
     return (
       <SidebarProvider>

@@ -37,7 +37,7 @@ const AppSidebar = () => {
       url: "/reports",
       icon: FileText,
     },
-    // Só mostra a página de usuários para administradores
+    // Só mostra a página de usuários para administradores - verificação restaurada
     ...(isAdmin ? [{
       title: "Usuários",
       url: "/users",
