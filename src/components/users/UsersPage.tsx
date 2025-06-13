@@ -9,7 +9,6 @@ import UsersTable from "./UsersTable";
 const UsersPage = () => {
   const { profile, loading, isAdmin, error } = useProfile();
 
-  // Loading unificado - mostrar apenas quando realmente necessário
   if (loading) {
     return (
       <SidebarProvider>
@@ -25,7 +24,6 @@ const UsersPage = () => {
     );
   }
 
-  // Verificação de erro
   if (error) {
     return (
       <SidebarProvider>
@@ -48,7 +46,6 @@ const UsersPage = () => {
     );
   }
 
-  // Verificação de permissão de administrador - restaurada
   if (!isAdmin) {
     return (
       <SidebarProvider>
@@ -71,7 +68,6 @@ const UsersPage = () => {
     );
   }
 
-  // Interface principal - renderizada apenas quando tudo estiver OK
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">

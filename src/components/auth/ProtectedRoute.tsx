@@ -10,7 +10,6 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
 
-  // Loading simples e direto
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -19,12 +18,10 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  // Verificação direta se não há usuário
   if (!user) {
     return <AuthPage />;
   }
 
-  // Renderizar children apenas quando autenticado
   return <>{children}</>;
 };
 

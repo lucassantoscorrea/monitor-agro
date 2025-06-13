@@ -21,7 +21,6 @@ export const useProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      // Se não há usuário ou ainda está carregando auth, resetar estado
       if (!user) {
         setProfile(null);
         setLoading(authLoading);
@@ -29,7 +28,6 @@ export const useProfile = () => {
         return;
       }
 
-      // Se já temos o perfil para este usuário, não refazer a consulta
       if (profile && profile.id === user.id) {
         setLoading(false);
         return;
@@ -41,7 +39,6 @@ export const useProfile = () => {
         
         console.log('Buscando perfil para usuário:', user.id);
         
-        // Fazer apenas uma consulta direta à tabela profiles
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
@@ -66,9 +63,8 @@ export const useProfile = () => {
     };
 
     fetchProfile();
-  }, [user?.id, authLoading]); // Dependências otimizadas
+  }, [user?.id, authLoading]);
 
-  // Memoizar o cálculo de isAdmin para evitar re-computações
   const isAdmin = profile?.role === 'administrador';
   
   return {
