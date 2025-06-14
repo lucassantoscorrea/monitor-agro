@@ -13,6 +13,11 @@ export interface Profile {
   updated_at: string;
 }
 
+function normalizeRole(role?: string | null) {
+  // Normaliza papel de acesso para facilitar comparações ('administrador')
+  return (role || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+}
+
 export const useProfile = () => {
   const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -30,7 +35,6 @@ export const useProfile = () => {
       }
 
       if (profile && profile.id === user.id) {
-        console.log('useProfile: Perfil já carregado para este usuário');
         setLoading(false);
         return;
       }
@@ -38,24 +42,24 @@ export const useProfile = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         console.log('useProfile: Buscando perfil para usuário:', user.id);
-        
-        // Buscar o perfil diretamente, sem usar a função que causa recursão
+
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error('useProfile: Erro ao buscar perfil:', error);
           setError(`Erro ao buscar perfil: ${error.message}`);
           setProfile(null);
         } else {
-          console.log('useProfile: Perfil encontrado:', data);
-          console.log('useProfile: Role do usuário:', data?.role);
           setProfile(data);
+          if (!data) {
+            console.warn('useProfile: Nenhum perfil encontrado para o usuário');
+          }
         }
       } catch (error) {
         console.error('useProfile: Erro interno:', error);
@@ -67,16 +71,30 @@ export const useProfile = () => {
     };
 
     fetchProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, authLoading]);
 
-  const isAdmin = profile?.role === 'administrador';
-  
+  // Use a função normalizeRole. Exige que o valor, mesmo sem acento e case, seja igual a 'administrador'
+  const isAdmin = normalizeRole(profile?.role) === 'administrador';
+
+  // Log extra para debug detalhado
+  if (!loading && profile) {
+    if (!isAdmin) {
+      console.log(
+        '[DEBUG] useProfile: role não reconhecido como admin:',
+        profile.role,
+        '| Normalizado:', normalizeRole(profile.role)
+      );
+    }
+  }
+
   console.log('useProfile: Estado atual - profile:', profile, 'isAdmin:', isAdmin, 'loading:', loading || authLoading);
-  
+
   return {
     profile,
     loading: authLoading || loading,
     error,
-    isAdmin
+    isAdmin,
+    rawRole: profile?.role // útil para debug visual no front caso queira
   };
 };
